@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  kafka_broker1:
+    image: confluentinc/cp-kafka:latest
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_NODE_ID: "1"
+
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@127.0.0.1:9093"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+
+      KAFKA_LISTENERS: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka_broker1:9092,EXTERNAL://127.0.0.1:9094"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_kraft:/var/lib/kafka/data
+
+    ports:
+      - "9092:9092" # 使我本地寫程式碼傳訊息給 localhost 9092 能被轉發到上面 kafka容器的 local host 9092
+      - "9093:9093"
+      - "9094:9094"
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: seashell
+      POSTGRES_PASSWORD: rdss510478
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  kafkat-ui:
+    image: provectuslabs/kafka-ui:latest
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka_broker1:9092
+    ports:
+      - "8080:8080"
+  
+volumes:
+  kafka_kraft:
+  postgres:
