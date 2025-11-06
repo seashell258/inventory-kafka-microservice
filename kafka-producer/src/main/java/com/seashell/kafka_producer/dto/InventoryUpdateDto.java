@@ -22,11 +22,11 @@ public class InventoryUpdateDto {
         this.productId = productId;
     }
 
-    public int getQuantityChange() {
+    public int getQuantity() {
         return quantityChange;
     }
 
-    public void setQuantityChange(int quantityChange) {
+    public void setQuantity(int quantityChange) {
         this.quantityChange = quantityChange;
     }
 }

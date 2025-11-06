@@ -24,7 +24,7 @@ public class InventoryController {
 
     @PostMapping("/update")
     public OperationResult updateInventory(@RequestBody @Valid InventoryUpdateDto dto) {
-        OperationResult result = service.publishInventoryUpdate(dto.getProductId(),dto.getQuantityChange());
+        OperationResult result = service.publishInventoryUpdate(dto);
         return result;
     }
 }
