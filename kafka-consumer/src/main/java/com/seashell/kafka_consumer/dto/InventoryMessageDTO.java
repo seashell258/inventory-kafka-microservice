@@ -1,20 +1,28 @@
 package com.seashell.kafka_consumer.dto;
 
-import jakarta.validation.constraints.Min;
+import java.time.Instant;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 public class InventoryMessageDTO {
 
-    @NotBlank(message = "productId cannot be blank")
-    private String productId;
+    @NotBlank
+    private String productId;      // 商品編號
 
-    @Min(value = 0, message = "quantity must be >= 0")
-    private int quantity;
+    @Min(-1000)
+    @Max(1000)
+    private int quantityChange;    // 庫存增減（負數代表出貨）
 
-    // Constructor, Getter & Setter
-    public InventoryMessageDTO() {}
+    @NotBlank
+    private String updatedBy;      // 更改的組織為何
 
+    private String changeReason;  //庫存變更原因選填
+
+    private Instant eventTime;  //庫存變更原因選填。 選 instant 而不是 localDateTime 方便跨時區的系統使用。
+
+    // ===== Getter / Setter =====
     public String getProductId() {
         return productId;
     }
@@ -23,11 +31,36 @@ public class InventoryMessageDTO {
         this.productId = productId;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
+
+    public int getQuantityChange() {
+        return quantityChange;
+    }
+
+    public void setQuantityChange(int quantityChange) {
+        this.quantityChange = quantityChange;
+    }
+
+    public String getChangeReason() {
+        return changeReason;
+    }
+
+    public void setChangeReason(String changeReason) {
+        this.changeReason = changeReason;
+    }
+
+    public Instant getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(Instant eventTime) {
+        this.eventTime = eventTime;
+    }
+
 }

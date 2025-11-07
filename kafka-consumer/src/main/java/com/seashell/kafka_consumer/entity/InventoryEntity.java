@@ -3,8 +3,8 @@ package com.seashell.kafka_consumer.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "inventory") // 對應資料庫的 table 名稱
-public class InventoryEntity {
+@Table(name = "inventory") // 對應資料庫的 table 名稱 
+public class InventoryEntity { //代表資料表中「一筆」資料
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

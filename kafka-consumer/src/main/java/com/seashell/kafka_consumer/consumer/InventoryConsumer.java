@@ -2,7 +2,7 @@ package com.seashell.kafka_consumer.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seashell.kafka_consumer.dto.InventoryMessageDTO;
-import com.seashell.kafka_consumer.service.InventoryService;
+import com.seashell.kafka_consumer.service.InventoryCrudService;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -13,14 +13,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+import com.seashell.kafka_consumer.dto.EnrichedInventoryDto;
+
 @Service
 public class InventoryConsumer {
 
-    private final InventoryService inventoryService;
+    private final InventoryCrudService inventoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    public InventoryConsumer(InventoryService inventoryService) {
+    public InventoryConsumer(InventoryCrudService inventoryService) {
         this.inventoryService = inventoryService;
     }
 
@@ -29,10 +31,10 @@ public class InventoryConsumer {
         System.out.println("Received: " + message);
         try {
             // JSON -> DTO
-            InventoryMessageDTO dto = objectMapper.readValue(message, InventoryMessageDTO.class);
+            EnrichedInventoryDto dto = objectMapper.readValue(message, EnrichedInventoryDto.class);
 
             // DTO 驗證
-            Set<ConstraintViolation<InventoryMessageDTO>> violations = validator.validate(dto);
+            Set<ConstraintViolation<EnrichedInventoryDto>> violations = validator.validate(dto);
             if (!violations.isEmpty()) {
                 violations.forEach(v -> System.err.println("Validation error: " + v.getMessage()));
                 return; // 有錯就不呼叫 service

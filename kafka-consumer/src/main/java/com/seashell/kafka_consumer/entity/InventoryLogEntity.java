@@ -1,6 +1,7 @@
 package com.seashell.kafka_consumer.entity;
 
 import jakarta.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "inventory_log")
@@ -10,64 +11,64 @@ public class InventoryLogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 對應哪一個商品
     @Column(nullable = false)
     private String productId;
 
-    // 增加或減少的數量（例如 +5, -3）
+    @Column(nullable = false)
+    private Integer oldQuantity;
+
     @Column(nullable = false)
     private Integer quantityChange;
 
-    // 操作來源（訂單、手動、補貨）
-    private String sourceType;
-
-    // 操作的時間戳
     @Column(nullable = false)
-    private Long timestamp;
+    private Integer newQuantity;
 
-    public InventoryLogEntity() {}
+    @Column(nullable = false)
+    private String updatedBy;
 
-    public InventoryLogEntity(String productId, Integer quantityChange, String sourceType, Long timestamp) {
+    @Column(nullable = false, updatable = false)
+    private Instant updatedAt;
+
+    @Column
+    private String changeReason; //庫存變動原因 可選擇性填入
+
+    // ===== Constructor =====
+    public InventoryLogEntity() {
+        this.updatedAt = Instant.now(); // 無參構造自動填時間
+    }
+
+    public InventoryLogEntity(String productId, Integer oldQuantity, Integer quantityChange,
+                              Integer newQuantity, String updatedBy, String changeReason) {
         this.productId = productId;
+        this.oldQuantity = oldQuantity;
         this.quantityChange = quantityChange;
-        this.sourceType = sourceType;
-        this.timestamp = timestamp;
+        this.newQuantity = newQuantity;
+        this.updatedBy = updatedBy;
+        this.changeReason = changeReason;
+        this.updatedAt = Instant.now(); // 建構時自動填時間
     }
 
-    // Getter / Setter
-    public Long getId() {
-        return id;
-    }
+    // ===== Getter / Setter =====
+    public Long getId() { return id; }
 
-    public String getProductId() {
-        return productId;
-    }
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
+    public Integer getOldQuantity() { return oldQuantity; }
+    public void setOldQuantity(Integer oldQuantity) { this.oldQuantity = oldQuantity; }
 
-    public Integer getQuantityChange() {
-        return quantityChange;
-    }
+    public Integer getQuantityChange() { return quantityChange; }
+    public void setQuantityChange(Integer quantityChange) { this.quantityChange = quantityChange; }
 
-    public void setQuantityChange(Integer quantityChange) {
-        this.quantityChange = quantityChange;
-    }
+    public Integer getNewQuantity() { return newQuantity; }
+    public void setNewQuantity(Integer newQuantity) { this.newQuantity = newQuantity; }
 
-    public String getSourceType() {
-        return sourceType;
-    }
+    public String getUpdatedBy() { return updatedBy; }
+    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
 
-    public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
-    }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
+    public String getChangeReason() { return changeReason; }
+    public void setChangeReason(String changeReason) { this.changeReason = changeReason; }
 }
