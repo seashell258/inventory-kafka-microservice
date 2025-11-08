@@ -1,5 +1,7 @@
 package com.seashell.kafka_consumer.service;
 
+import java.time.Instant;
+
 import org.springframework.stereotype.Service;
 
 import com.seashell.kafka_consumer.dto.EnrichedInventoryDto;
@@ -17,6 +19,12 @@ public class UpdateInventoryLogEnricher {
         this.inventoryRepository = inventoryRepository;
     }
 
+    public long formatTimeToInstant(InventoryMessageDTO dto) {
+        Instant instant = Instant.parse(dto.getEventTime());
+        long timestamp = instant.toEpochMilli();
+        return timestamp;
+    }
+
     public EnrichedInventoryDto enrichInventoryMessageWithLock(InventoryMessageDTO dto) {
         // 查舊值，鎖住 row
         InventoryEntity entity = inventoryRepository
@@ -26,13 +34,13 @@ public class UpdateInventoryLogEnricher {
         ));
 
         EnrichedInventoryDto enriched = EnrichedInventoryDto.builder()
-        .productId(dto.getProductId())
-        .quantityChange(dto.getQuantityChange())
-        .oldQuantity(entity.getQuantity())
-        .newQuantity(entity.getQuantity() + dto.getQuantityChange())
-        .lastUpdatedTimestamp(dto.getEventTime())
-        .changeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註")
-        .build(); 
+                .productId(dto.getProductId())
+                .quantityChange(dto.getQuantityChange())
+                .oldQuantity(entity.getQuantity())
+                .newQuantity(entity.getQuantity() + dto.getQuantityChange())
+                .lastUpdatedTimestamp(dto.getEventTime())
+                .changeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註")
+                .build();
 
         return enriched;
     }

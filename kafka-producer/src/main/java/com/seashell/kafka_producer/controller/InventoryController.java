@@ -1,18 +1,15 @@
 package com.seashell.kafka_producer.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.time.Instant;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import jakarta.validation.Valid; 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.seashell.kafka_producer.dto.InventoryUpdateDto;
 import com.seashell.kafka_producer.dto.OperationResult;
 import com.seashell.kafka_producer.service.ProducerInventoryUpdateService;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -27,7 +24,6 @@ public class InventoryController {
 
     @PostMapping("/update")
     public OperationResult updateInventory(@RequestBody @Valid InventoryUpdateDto dto) {
-        dto.setEventTime(Instant.now());
         OperationResult result = service.publishInventoryUpdate(dto);
         return result;
     }

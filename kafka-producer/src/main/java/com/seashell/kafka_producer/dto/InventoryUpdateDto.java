@@ -1,7 +1,5 @@
 package com.seashell.kafka_producer.dto;
 
-import java.time.Instant;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +18,7 @@ public class InventoryUpdateDto {
 
     private String changeReason;  //庫存變更原因選填
 
-    private Instant eventTime;  //庫存變更原因選填。 選 instant 而不是 localDateTime 方便跨時區的系統使用。
+    private String eventTime;  //庫存變更原因選填。 選 instant 而不是 localDateTime 方便跨時區的系統使用。
 
     // ===== Getter / Setter =====
     public String getProductId() {
@@ -55,11 +53,11 @@ public class InventoryUpdateDto {
         this.changeReason = changeReason;
     }
 
-    public Instant getEventTime() {
+    public String getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(Instant eventTime) {
+    public void setEventTime(String eventTime) {
         this.eventTime = eventTime;
     }
 
