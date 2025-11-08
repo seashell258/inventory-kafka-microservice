@@ -30,7 +30,7 @@ public class UpdateInventoryLogEnricher {
         .quantityChange(dto.getQuantityChange())
         .oldQuantity(entity.getQuantity())
         .newQuantity(entity.getQuantity() + dto.getQuantityChange())
-        .lastUpdatedTimestamp(System.currentTimeMillis())
+        .lastUpdatedTimestamp(dto.getEventTime())
         .changeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註")
         .build(); 
 
