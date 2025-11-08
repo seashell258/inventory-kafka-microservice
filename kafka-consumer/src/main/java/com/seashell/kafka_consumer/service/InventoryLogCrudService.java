@@ -1,49 +1,52 @@
 package com.seashell.kafka_consumer.service;
 
-import com.seashell.kafka_consumer.entity.InventoryEntity;
+import com.seashell.kafka_consumer.dto.EnrichedInventoryDto;
+
 import com.seashell.kafka_consumer.entity.InventoryLogEntity;
+import com.seashell.kafka_consumer.exception.InventoryNotFoundException;
 import com.seashell.kafka_consumer.repository.InventoryLogRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-import java.util.Optional;
+
 
 @Service
 public class InventoryLogCrudService {
 
     private final InventoryLogRepository inventoryLogRepository;
 
-
     public InventoryLogCrudService(InventoryLogRepository inventoryLogRepository) {
         this.inventoryLogRepository = inventoryLogRepository;
     }
 
-    // 新增庫存更新 log
-    public InventoryLogEntity upsertInventoryLog(String productId, int quantityChange) {
-        Optional<InventoryLogEntity> existing = inventoryLogRepository.findByProductId(productId);
+    // 會跟 inventory 更新一起在同一 Transaction 中更新 log
+    public InventoryLogEntity insertInventoryLog(EnrichedInventoryDto dto) {
 
-        InventoryLogEntity entity;
-        if (existing.isPresent()) {
-            // 如果已存在 → 修改數量
-            entity = existing.get(); 
-            entity.setNewQuantity(entity.getOldQuantity() + quantityChange); //新值
-             entity.setOldQuantity(entity.getQuantity()); //新值
-        } else {
-            // 如果不存在 → 新增新商品
-           .orElseThrow(() -> new InventoryNotFoundException(
-                "No inventory record found for productId: " + dto.getProductId()
-        ));
-        }
+        InventoryLogEntity log = new InventoryLogEntity();
 
-        entity.setLastUpdatedTimestamp(Instant.now().toEpochMilli());
-        return inventoryLogRepository.save(entity); // save = 新增或更新
+        log.setProductId(dto.getProductId());
+        log.setOldQuantity(dto.getOldQuantity());
+        log.setNewQuantity(dto.getNewQuantity());
+        log.setQuantityChange(dto.getQuantityChange());
+        log.setUpdatedAt(Instant.ofEpochMilli(dto.getLastUpdatedTimestamp()));
+        log.setChangeReason(dto.getChangeReason() != null ? dto.getChangeReason(): "無備註");
+
+        return inventoryLogRepository.save(log); 
+
     }
 
-    public Optional<InventoryEntity> getInventoryLog(String productId) {
-        return inventoryLogRepository.findByProductId(productId);
+    public InventoryLogEntity getInventoryLog(String productId) {
+        return inventoryLogRepository.findByProductId(productId)
+                .orElseThrow(() -> new InventoryNotFoundException(
+                        "Inventory not found for productId: " + productId));
     }
 
     // 查全部
-    public Iterable<InventoryEntity> getAll() {
-        return inventoryLogRepository.findAll();
+    public Page<InventoryLogEntity> getAll(Pageable pageable) {
+        return inventoryLogRepository.findAll(pageable);
     }
+
 }

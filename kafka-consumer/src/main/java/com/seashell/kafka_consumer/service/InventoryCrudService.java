@@ -1,41 +1,37 @@
 package com.seashell.kafka_consumer.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.seashell.kafka_consumer.dto.EnrichedInventoryDto;
 import com.seashell.kafka_consumer.entity.InventoryEntity;
+import com.seashell.kafka_consumer.exception.InventoryNotFoundException;
 import com.seashell.kafka_consumer.repository.InventoryRepository;
 import org.springframework.stereotype.Service;
-import java.time.Instant;
-import java.util.Optional;
 
 @Service
-public class InventoryService {
+public class InventoryCrudService {
 
     private final InventoryRepository inventoryRepository;
 
-    public InventoryService(InventoryRepository inventoryRepository) {
+    public InventoryCrudService(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
 
-    // 新增或更新庫存
-    public InventoryEntity upsertInventory(String productId, int quantity) {
-        Optional<InventoryEntity> existing = inventoryRepository.findByProductId(productId);
+    // 更新庫存
+    public InventoryEntity updateInventoryOrThrow(EnrichedInventoryDto dto) {
+        InventoryEntity entity = this.getInventoryOrThrow(dto.getProductId()); // 健壯性檢查
+        entity.setQuantity(dto.getNewQuantity());
+        entity.setLastUpdatedTimestamp(dto.getLastUpdatedTimestamp());
+        return inventoryRepository.save(entity); 
 
-        InventoryEntity entity;
-        if (existing.isPresent()) {
-            // 如果已存在 → 修改數量
-            entity = existing.get();
-            entity.setQuantity(entity.getQuantity() + quantity);
-        } else {
-            // 如果不存在 → 新增新商品
-            entity = new InventoryEntity(productId, quantity, Instant.now().toEpochMilli());
-        }
-
-        entity.setLastUpdatedTimestamp(Instant.now().toEpochMilli());
-        return inventoryRepository.save(entity); // save = 新增或更新
     }
 
-    // 查庫存 // findBy+entity裡面有的名稱，可以自動創建 crud 方法。
-    public Optional<InventoryEntity> getInventory(String productId) {
-        return inventoryRepository.findByProductId(productId);
+    // 健壯性檢查：找不到就拋 exception
+    public InventoryEntity getInventoryOrThrow(String productId) {
+        return inventoryRepository.findByProductId(productId)
+                .orElseThrow(() -> new InventoryNotFoundException(
+                        "Inventory not found for productId: " + productId));
     }
 
     // 刪除庫存項
@@ -44,8 +40,9 @@ public class InventoryService {
                 .ifPresent(inventoryRepository::delete);
     }
 
-    // 查全部
-    public Iterable<InventoryEntity> getAll() {
-        return inventoryRepository.findAll();
+    // 分頁查全部
+    public Page<InventoryEntity> getAll(Pageable pageable) {
+        return inventoryRepository.findAll(pageable);
     }
+
 }

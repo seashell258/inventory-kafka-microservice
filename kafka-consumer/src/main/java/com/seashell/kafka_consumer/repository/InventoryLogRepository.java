@@ -6,11 +6,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-import com.seashell.kafka_consumer.entity.InventoryEntity;
 import com.seashell.kafka_consumer.entity.InventoryLogEntity;
 
 
-public interface InventoryLogRepository extends JpaRepository<InventoryEntity, Long> {
+public interface InventoryLogRepository extends JpaRepository<InventoryLogEntity, Long> {
 
 
     Optional<InventoryLogEntity> findByProductId(String productId);

@@ -9,15 +9,15 @@ import com.seashell.kafka_consumer.exception.InventoryNotFoundException;
 import com.seashell.kafka_consumer.repository.InventoryRepository;
 
 @Service
-public class UpdateInventoryEnricher {
+public class UpdateInventoryLogEnricher {
 
     private final InventoryRepository inventoryRepository;
 
-    public UpdateInventoryEnricher(InventoryRepository inventoryRepository) {
+    public UpdateInventoryLogEnricher(InventoryRepository inventoryRepository) {
         this.inventoryRepository = inventoryRepository;
     }
 
-    public EnrichedInventoryDto enrichInventoryMessage(InventoryMessageDTO dto) {
+    public EnrichedInventoryDto enrichInventoryMessageWithLock(InventoryMessageDTO dto) {
         // 查舊值，鎖住 row
         InventoryEntity entity = inventoryRepository
                 .findByProductId(dto.getProductId())
@@ -25,13 +25,14 @@ public class UpdateInventoryEnricher {
                 "No inventory record found for productId: " + dto.getProductId()
         ));
 
-        EnrichedInventoryDto enriched = new EnrichedInventoryDto();
-        enriched.setProductId(dto.getProductId());
-        enriched.setQuantityChange(dto.getQuantityChange());
-        enriched.setOldQuantity(entity.getQuantity());
-        enriched.setNewQuantity(entity.getQuantity() + dto.getQuantityChange());
-        enriched.setLastUpdatedTimestamp(System.currentTimeMillis());
-        enriched.setChangeReason(dto.getChangeReason()); // 如果原始 DTO 有備註欄位
+        EnrichedInventoryDto enriched = EnrichedInventoryDto.builder()
+        .productId(dto.getProductId())
+        .quantityChange(dto.getQuantityChange())
+        .oldQuantity(entity.getQuantity())
+        .newQuantity(entity.getQuantity() + dto.getQuantityChange())
+        .lastUpdatedTimestamp(System.currentTimeMillis())
+        .changeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註")
+        .build(); 
 
         return enriched;
     }

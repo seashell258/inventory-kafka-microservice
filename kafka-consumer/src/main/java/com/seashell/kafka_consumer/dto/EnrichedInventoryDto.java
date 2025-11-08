@@ -1,10 +1,11 @@
 package com.seashell.kafka_consumer.dto;
 
-import java.time.Instant;
+import lombok.Builder;
 
 /**
  * 入庫用 DTO（已補齊資料）
  */
+@Builder
 public class EnrichedInventoryDto {
 
     // 對應 InventoryEntity 的 productId
@@ -24,6 +25,7 @@ public class EnrichedInventoryDto {
 
     // 可選備註欄位（例如變更原因）
     private String changeReason;
+
 
     public EnrichedInventoryDto(String productId, Integer oldQuantity, Integer newQuantity,
                                 Integer quantityChange, Long lastUpdatedTimestamp, String changeReason) {
