@@ -8,13 +8,13 @@ import com.seashell.kafka_consumer.dto.InventoryMessageDTO;
 import jakarta.transaction.Transactional;   
 
 @Service
-public class InventoryProcessingService {
+public class InventoryTransactionService {
 
     private final UpdateInventoryLogEnricher updateInventoryLogEnricher;
     private final InventoryLogCrudService inventoryLogCrudService;
     private final InventoryCrudService inventoryCrudService;
 
-    public InventoryProcessingService(
+    public InventoryTransactionService(
             UpdateInventoryLogEnricher updateInventoryLogEnricher,
             InventoryLogCrudService inventoryLogCrudService,
             InventoryCrudService inventoryCrudService

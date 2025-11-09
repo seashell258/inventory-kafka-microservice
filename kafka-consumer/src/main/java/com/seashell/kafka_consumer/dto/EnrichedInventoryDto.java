@@ -8,32 +8,32 @@ import lombok.Builder;
 @Builder
 public class EnrichedInventoryDto {
 
-    // 對應 InventoryEntity 的 productId
+    // 對應 InventoryEntity 的 productId. for Both InventoryLog and Inventory 
     private String productId;
 
-    // 舊庫存（查庫得到的原值）
+    // 舊庫存（查庫得到的原值） for InventoryLog 
     private Integer oldQuantity;
 
-    // 新庫存（計算後的新值）
+    // 新庫存（計算後的新值）  for Both InventoryLog and Inventory 
     private Integer newQuantity;
 
-    // 變動量（可以從 message dto 計算得出）
+    // 變動量（ message dto 的輸入） for InventoryLog  
     private Integer quantityChange;
 
-    // 對應 InventoryEntity 的 lastUpdatedTimestamp（建議用毫秒）
-    private Long lastUpdatedTimestamp;
+    // for InventoryLog. inventory 本身則用@preUpdate得到程式自動生成的 last updated time
+    private Long eventTime;
 
     // 可選備註欄位（例如變更原因）
     private String changeReason;
 
 
     public EnrichedInventoryDto(String productId, Integer oldQuantity, Integer newQuantity,
-                                Integer quantityChange, Long lastUpdatedTimestamp, String changeReason) {
+                                Integer quantityChange, Long eventTime, String changeReason) {
         this.productId = productId;
         this.oldQuantity = oldQuantity;
         this.newQuantity = newQuantity;
         this.quantityChange = quantityChange;
-        this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+        this.eventTime = eventTime;
         this.changeReason = changeReason;
     }
 
@@ -71,12 +71,12 @@ public class EnrichedInventoryDto {
         this.quantityChange = quantityChange;
     }
 
-    public Long getLastUpdatedTimestamp() {
-        return lastUpdatedTimestamp;
+    public Long getEventTime() {
+        return eventTime;
     }
 
-    public void setLastUpdatedTimestamp(Long lastUpdatedTimestamp) {
-        this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+    public void setEventTime(Long eventTime) {
+        this.eventTime = eventTime;
     }
 
     public String getChangeReason() {

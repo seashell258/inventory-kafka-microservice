@@ -18,8 +18,7 @@ public class InventoryMessageDTO {
 
     private String changeReason;  //庫存變更原因選填
 
-    private String eventTime;  //庫存變更原因選填。 選 instant 而不是 localDateTime 方便跨時區的系統使用。
-
+    private String eventTime;  
     // ===== Getter / Setter =====
     public String getProductId() {
         return productId;

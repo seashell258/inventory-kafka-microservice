@@ -22,7 +22,7 @@ public class InventoryCrudService {
     public InventoryEntity updateInventoryOrThrow(EnrichedInventoryDto dto) {
         InventoryEntity entity = this.getInventoryOrThrow(dto.getProductId()); // 健壯性檢查
         entity.setQuantity(dto.getNewQuantity());
-        entity.setLastUpdatedTimestamp(dto.getLastUpdatedTimestamp());
+        entity.setLastUpdatedTimestamp(dto.getEventTime());
         return inventoryRepository.save(entity); 
 
     }

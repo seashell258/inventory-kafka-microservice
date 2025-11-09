@@ -3,7 +3,7 @@ package com.seashell.kafka_consumer.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seashell.kafka_consumer.dto.InventoryMessageDTO;
 
-import com.seashell.kafka_consumer.service.InventoryProcessingService;
+import com.seashell.kafka_consumer.service.InventoryTransactionService;
 
 
 import jakarta.validation.ConstraintViolation;
@@ -20,7 +20,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class InventoryConsumer {
-    private final InventoryProcessingService inventoryProcessingService;
+    private final InventoryTransactionService inventoryTransactionService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -39,7 +39,7 @@ public class InventoryConsumer {
             }
 
             // 呼叫 Service 層處理業務邏輯
-            inventoryProcessingService.processInventoryMessage(dto);
+            inventoryTransactionService.processInventoryMessage(dto);
 
         } catch (Exception e) {
             e.printStackTrace();

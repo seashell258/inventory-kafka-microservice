@@ -31,7 +31,7 @@ public class InventoryLogCrudService {
         log.setOldQuantity(dto.getOldQuantity());
         log.setNewQuantity(dto.getNewQuantity());
         log.setQuantityChange(dto.getQuantityChange());
-        log.setUpdatedAt(Instant.ofEpochMilli(dto.getLastUpdatedTimestamp()));
+        log.setUpdatedAt(Instant.ofEpochMilli(dto.getEventTime()));
         log.setChangeReason(dto.getChangeReason() != null ? dto.getChangeReason(): "無備註");
 
         return inventoryLogRepository.save(log); 
