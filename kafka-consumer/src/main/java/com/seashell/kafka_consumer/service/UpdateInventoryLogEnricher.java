@@ -26,6 +26,7 @@ public class UpdateInventoryLogEnricher {
     }
 
     public EnrichedInventoryDto enrichInventoryMessageWithLock(InventoryMessageDTO dto) {
+        long timestamp = this.formatTimeToInstant(dto);
         // 查舊值，鎖住 row
         InventoryEntity entity = inventoryRepository
                 .findByProductId(dto.getProductId())
@@ -38,7 +39,7 @@ public class UpdateInventoryLogEnricher {
                 .quantityChange(dto.getQuantityChange())
                 .oldQuantity(entity.getQuantity())
                 .newQuantity(entity.getQuantity() + dto.getQuantityChange())
-                .lastUpdatedTimestamp(dto.getEventTime())
+                .eventTime(timestamp)
                 .changeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註")
                 .build();
 

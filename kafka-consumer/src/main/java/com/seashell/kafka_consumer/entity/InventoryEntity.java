@@ -1,6 +1,13 @@
 package com.seashell.kafka_consumer.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "inventory") // 對應資料庫的 table 名稱 
@@ -18,17 +25,31 @@ public class InventoryEntity { //代表資料表中「一筆」資料
     @Column(nullable = false)
     private Integer quantity = 0;
 
-    // 最近一次更新時間（方便查最新資料）
-    @Column(nullable = false)
-    private Long lastUpdatedTimestamp;
+    // 最近一次更新時間
+    private long updatedAt = 0;
+
+    private long createdAt = 0;
+
+    @PrePersist
+    protected void onCreate() {
+        long now = System.currentTimeMillis();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = System.currentTimeMillis();
+    }
 
     // 👉 可加上 constructor、getter、setter
-    public InventoryEntity() {}
+    public InventoryEntity() {
+    }
 
-    public InventoryEntity(String productId, Integer quantity, Long lastUpdatedTimestamp) {
+    public InventoryEntity(String productId, Integer quantity) {
         this.productId = productId;
         this.quantity = quantity;
-        this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+
     }
 
     public Long getId() {
@@ -39,10 +60,6 @@ public class InventoryEntity { //代表資料表中「一筆」資料
         return productId;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
@@ -51,11 +68,12 @@ public class InventoryEntity { //代表資料表中「一筆」資料
         this.quantity = quantity;
     }
 
-    public Long getLastUpdatedTimestamp() {
-        return lastUpdatedTimestamp;
+    public long getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setLastUpdatedTimestamp(Long lastUpdatedTimestamp) {
-        this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+    public long getCreatedAt() {
+        return createdAt;
     }
+
 }
