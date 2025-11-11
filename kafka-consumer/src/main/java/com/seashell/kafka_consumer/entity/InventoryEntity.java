@@ -8,10 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
-@Table(name = "inventory") // 對應資料庫的 table 名稱 
-public class InventoryEntity { //代表資料表中「一筆」資料
+@Table(name = "inventory") // 對應資料庫的 table 名稱
+public class InventoryEntity { // 代表資料表中「一筆」資料
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +31,9 @@ public class InventoryEntity { //代表資料表中「一筆」資料
 
     private long createdAt = 0;
 
+    @Version
+    private long version; // 防止race condition的輔助欄位 Hibernate 自動管理，單調增加。 不須 getter settter 
+
     @PrePersist
     protected void onCreate() {
         long now = System.currentTimeMillis();
@@ -40,10 +44,6 @@ public class InventoryEntity { //代表資料表中「一筆」資料
     @PreUpdate
     protected void onUpdate() {
         updatedAt = System.currentTimeMillis();
-    }
-
-    // 👉 可加上 constructor、getter、setter
-    public InventoryEntity() {
     }
 
     public InventoryEntity(String productId, Integer quantity) {

@@ -30,7 +30,10 @@ public class InventoryLogEntity {
     private Instant updatedAt;
 
     @Column
-    private String changeReason; //庫存變動原因 可選擇性填入
+    private String changeReason; // 庫存變動原因 可選擇性填入
+
+    @Version
+    private long version; // 防止race condition的輔助性欄位 Hibernate 自動管理，單調增加。 不須 getter settter
 
     // ===== Constructor =====
     public InventoryLogEntity() {
@@ -38,7 +41,7 @@ public class InventoryLogEntity {
     }
 
     public InventoryLogEntity(String productId, Integer oldQuantity, Integer quantityChange,
-                              Integer newQuantity, String updatedBy, String changeReason) {
+            Integer newQuantity, String updatedBy, String changeReason) {
         this.productId = productId;
         this.oldQuantity = oldQuantity;
         this.quantityChange = quantityChange;
@@ -49,26 +52,63 @@ public class InventoryLogEntity {
     }
 
     // ===== Getter / Setter =====
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
+    public String getProductId() {
+        return productId;
+    }
 
-    public Integer getOldQuantity() { return oldQuantity; }
-    public void setOldQuantity(Integer oldQuantity) { this.oldQuantity = oldQuantity; }
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
-    public Integer getQuantityChange() { return quantityChange; }
-    public void setQuantityChange(Integer quantityChange) { this.quantityChange = quantityChange; }
+    public Integer getOldQuantity() {
+        return oldQuantity;
+    }
 
-    public Integer getNewQuantity() { return newQuantity; }
-    public void setNewQuantity(Integer newQuantity) { this.newQuantity = newQuantity; }
+    public void setOldQuantity(Integer oldQuantity) {
+        this.oldQuantity = oldQuantity;
+    }
 
-    public String getUpdatedBy() { return updatedBy; }
-    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
+    public Integer getQuantityChange() {
+        return quantityChange;
+    }
 
-    public Instant getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public void setQuantityChange(Integer quantityChange) {
+        this.quantityChange = quantityChange;
+    }
 
-    public String getChangeReason() { return changeReason; }
-    public void setChangeReason(String changeReason) { this.changeReason = changeReason; }
+    public Integer getNewQuantity() {
+        return newQuantity;
+    }
+
+    public void setNewQuantity(Integer newQuantity) {
+        this.newQuantity = newQuantity;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getChangeReason() {
+        return changeReason;
+    }
+
+    public void setChangeReason(String changeReason) {
+        this.changeReason = changeReason;
+    }
 }
