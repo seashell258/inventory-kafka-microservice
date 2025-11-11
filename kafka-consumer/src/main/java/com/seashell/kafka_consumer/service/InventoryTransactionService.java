@@ -37,7 +37,7 @@ public class InventoryTransactionService {
     }
 
     @Transactional
-    public void processInventoryBatchMessage(InventoryBatchMessageDto batchDto) {
+    public Map<InventoryMessageDto, String> processInventoryBatchMessage(InventoryBatchMessageDto batchDto) {
         List<EnrichedInventoryDto> successList = new ArrayList<>();
         Map<InventoryMessageDto, String> errorMap = new HashMap<>();
 
@@ -53,6 +53,8 @@ public class InventoryTransactionService {
 
         inventoryLogCrudService.insertBatchInventoryLog(successList);
         inventoryCrudService.updateBatchInventoryOrThrow(successList);
+
+        return errorMap;
     }
 
 }
