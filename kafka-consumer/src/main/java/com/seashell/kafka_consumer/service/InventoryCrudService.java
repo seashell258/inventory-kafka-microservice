@@ -1,5 +1,8 @@
 package com.seashell.kafka_consumer.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,22 +23,43 @@ public class InventoryCrudService {
 
     // 更新庫存
     public InventoryEntity updateInventoryOrThrow(EnrichedInventoryDto dto) {
-        InventoryEntity entity = this.getInventoryOrThrow(dto.getProductId()); // 健壯性檢查
+        InventoryEntity entity = this.getInventoryOrThrowWithLock(dto.getProductId()); // 健壯性檢查
         entity.setQuantity(dto.getNewQuantity());
-        return inventoryRepository.save(entity); 
+        return inventoryRepository.save(entity);
 
     }
 
     // 健壯性檢查：找不到就拋 exception
-    public InventoryEntity getInventoryOrThrow(String productId) {
-        return inventoryRepository.findByProductId(productId)
+    public InventoryEntity getInventoryOrThrowWithLock(String productId) {
+        return inventoryRepository.findByProductIdWithLock(productId)
                 .orElseThrow(() -> new InventoryNotFoundException(
                         "Inventory not found for productId: " + productId));
     }
 
+    public InventoryEntity getInventoryOrThrow(String productId) {
+        return inventoryRepository.findByProductId(productId)
+                .orElseThrow(() -> new InventoryNotFoundException(
+                        "Inventory not found for productId: " + productId));
+
+    }
+
+    public List<InventoryEntity> updateBatchInventoryOrThrow(List<EnrichedInventoryDto> batchDto) {
+        List<InventoryEntity> inventoryEntityList =  new ArrayList<>();
+        for (EnrichedInventoryDto dto : batchDto) {
+            InventoryEntity entity = this.getInventoryOrThrow(dto.getProductId()); // 健壯性檢查
+            entity.setQuantity(dto.getNewQuantity());
+            inventoryEntityList.add(entity);
+        }
+        return inventoryRepository.saveAll(inventoryEntityList);
+    }
+
+    
+
+
+
     // 刪除庫存項
     public void deleteInventory(String productId) {
-        inventoryRepository.findByProductId(productId)
+        inventoryRepository.findByProductIdWithLock(productId)
                 .ifPresent(inventoryRepository::delete);
     }
 

@@ -1,5 +1,7 @@
 package com.seashell.kafka_consumer.entity;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,25 +29,24 @@ public class InventoryEntity { // 代表資料表中「一筆」資料
     private Integer quantity = 0;
 
     // 最近一次更新時間
-    private long updatedAt = 0;
+    private Instant updatedAt ;
 
-    private long createdAt = 0;
+    private Instant createdAt ;
 
     @Version
     private long version; // 防止race condition的輔助欄位 Hibernate 自動管理，單調增加。 不須 getter settter 
 
-    @PrePersist
+     @PrePersist
     protected void onCreate() {
-        long now = System.currentTimeMillis();
+        Instant now = Instant.now(); // 你寫成 Insant.now() 錯了
         createdAt = now;
         updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = System.currentTimeMillis();
+        updatedAt = Instant.now(); // 少了分號
     }
-
     public InventoryEntity(String productId, Integer quantity) {
         this.productId = productId;
         this.quantity = quantity;
@@ -68,11 +69,11 @@ public class InventoryEntity { // 代表資料表中「一筆」資料
         this.quantity = quantity;
     }
 
-    public long getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public long getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 

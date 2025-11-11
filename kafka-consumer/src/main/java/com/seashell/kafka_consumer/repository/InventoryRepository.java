@@ -11,6 +11,8 @@ import jakarta.persistence.LockModeType;
 
 public interface InventoryRepository extends JpaRepository<InventoryEntity, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE) // 對應 FOR UPDATE
-    Optional<InventoryEntity> findByProductId(String productId);
+    Optional<InventoryEntity> findByProductIdWithLock(String productId);
     // 可以加自訂查詢，格式findBy + <Entity屬性名首字母大寫> 
+
+    Optional<InventoryEntity> findByProductId(String productId);
 }

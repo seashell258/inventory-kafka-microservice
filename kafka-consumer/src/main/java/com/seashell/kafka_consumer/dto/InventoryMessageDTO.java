@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
-public class InventoryMessageDTO {
+public class InventoryMessageDto {
 
     @NotBlank
     private String productId;      // 商品編號

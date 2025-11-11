@@ -11,7 +11,8 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class InventoryLogCrudService {
@@ -31,10 +32,27 @@ public class InventoryLogCrudService {
         log.setOldQuantity(dto.getOldQuantity());
         log.setNewQuantity(dto.getNewQuantity());
         log.setQuantityChange(dto.getQuantityChange());
-        log.setUpdatedAt(Instant.ofEpochMilli(dto.getEventTime()));
-        log.setChangeReason(dto.getChangeReason() != null ? dto.getChangeReason(): "無備註");
+        log.setUpdatedAt(dto.getEventTime());
+        log.setChangeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註");
 
-        return inventoryLogRepository.save(log); 
+        return inventoryLogRepository.save(log);
+
+    }
+
+    public List<InventoryLogEntity> insertBatchInventoryLog(List<EnrichedInventoryDto> dtoList) {
+        List<InventoryLogEntity> logList = new ArrayList<>();
+        for (EnrichedInventoryDto dto : dtoList) {
+            InventoryLogEntity log = new InventoryLogEntity();
+            log.setProductId(dto.getProductId());
+            log.setOldQuantity(dto.getOldQuantity());
+            log.setNewQuantity(dto.getNewQuantity());
+            log.setQuantityChange(dto.getQuantityChange());
+            log.setUpdatedAt(dto.getEventTime());
+            log.setChangeReason(dto.getChangeReason() != null ? dto.getChangeReason() : "無備註");
+            logList.add(log);
+        }
+
+        return inventoryLogRepository.saveAll(logList);
 
     }
 

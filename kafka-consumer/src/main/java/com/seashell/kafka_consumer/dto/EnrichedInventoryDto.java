@@ -1,5 +1,7 @@
 package com.seashell.kafka_consumer.dto;
 
+import java.time.Instant;
+
 import lombok.Builder;
 
 /**
@@ -21,7 +23,7 @@ public class EnrichedInventoryDto {
     private Integer quantityChange;
 
     // for InventoryLog. inventory 本身則用@preUpdate得到程式自動生成的 last updated time
-    private Long eventTime;
+    private Instant eventTime;
 
     // 可選備註欄位（例如變更原因）
     private String changeReason;

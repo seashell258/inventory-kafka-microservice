@@ -25,7 +25,7 @@ public class InventoryBatchUpdateService {
     public OperationResult publishInventoryBatchUpdate(InventoryUpdateBatchDto batchDto) {
         this.fillEventTime(batchDto);
         try {
-            kafkaTemplate.send("inventory", null, batchDto);
+            kafkaTemplate.send("batch-inventory", null, batchDto);
             return OperationResult.success("batch successfully published to kafka");
         } catch (Exception e) {
             e.printStackTrace();

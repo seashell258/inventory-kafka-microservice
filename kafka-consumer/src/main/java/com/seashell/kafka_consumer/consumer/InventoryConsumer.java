@@ -1,7 +1,8 @@
 package com.seashell.kafka_consumer.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.seashell.kafka_consumer.dto.InventoryMessageDTO;
+import com.seashell.kafka_consumer.dto.InventoryBatchMessageDto;
+import com.seashell.kafka_consumer.dto.InventoryMessageDto;
 
 import com.seashell.kafka_consumer.service.InventoryTransactionService;
 
@@ -30,9 +31,9 @@ public class InventoryConsumer {
         System.out.println("Received: " + message);
         try {
             // JSON -> DTO
-            InventoryMessageDTO dto = objectMapper.readValue(message, InventoryMessageDTO.class);
+            InventoryMessageDto dto = objectMapper.readValue(message, InventoryMessageDto.class);
             // DTO 驗證
-            Set<ConstraintViolation<InventoryMessageDTO>> violations = validator.validate(dto);
+            Set<ConstraintViolation<InventoryMessageDto>> violations = validator.validate(dto);
             if (!violations.isEmpty()) {
                 violations.forEach(v -> System.err.println("Validation error: " + v.getMessage()));
                 return; // 有錯就不呼叫 service
@@ -40,6 +41,27 @@ public class InventoryConsumer {
 
             // 呼叫 Service 層處理業務邏輯
             inventoryTransactionService.processInventoryMessage(dto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+     @KafkaListener(topics = "batch-inventory", groupId = "inventory-consumer-group")
+    public void listenBatch(String message) {
+        System.out.println("Received: " + message);
+        try {
+            // JSON -> DTO
+            InventoryBatchMessageDto dto = objectMapper.readValue(message, InventoryBatchMessageDto.class);
+            // DTO 驗證
+            Set<ConstraintViolation<InventoryBatchMessageDto>> violations = validator.validate(dto);
+            if (!violations.isEmpty()) {
+                violations.forEach(v -> System.err.println("Validation error: " + v.getMessage()));
+                return; // 有錯就不呼叫 service
+            }
+
+            // 呼叫 Service 層處理業務邏輯 入庫
+            inventoryTransactionService.processInventoryBatchMessage(dto);
 
         } catch (Exception e) {
             e.printStackTrace();
