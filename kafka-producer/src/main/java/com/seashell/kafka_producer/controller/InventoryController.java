@@ -25,13 +25,13 @@ public class InventoryController {
         this.batchService = batchService;
     }
 
-    @PostMapping("/update")
+    @PostMapping("/event")
     public OperationResult updateInventory(@RequestBody @Valid InventoryUpdateDto dto) {
         OperationResult result = service.publishInventoryUpdate(dto);
         return result;
-    }
+    }   
 
-    @PostMapping("/batch-update")
+    @PostMapping("/batch")
     public OperationResult batchUpdateInventory(@RequestBody @Valid InventoryUpdateBatchDto batchDto) {
         OperationResult result = batchService.publishInventoryBatchUpdate(batchDto);
         return result;
