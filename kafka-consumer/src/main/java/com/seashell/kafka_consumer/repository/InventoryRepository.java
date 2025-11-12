@@ -4,15 +4,19 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.seashell.kafka_consumer.entity.InventoryEntity;
 
 import jakarta.persistence.LockModeType;
 
 public interface InventoryRepository extends JpaRepository<InventoryEntity, Long> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE) // 對應 FOR UPDATE
-    Optional<InventoryEntity> findByProductIdWithLock(String productId);
-    // 可以加自訂查詢，格式findBy + <Entity屬性名首字母大寫> 
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT i FROM InventoryEntity i WHERE i.productId = :productId")
+    Optional<InventoryEntity> findByProductIdForUpdate(@Param("productId") String productId);
+     
 
     Optional<InventoryEntity> findByProductId(String productId);
 }

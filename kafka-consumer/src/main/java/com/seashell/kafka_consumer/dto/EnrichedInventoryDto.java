@@ -30,7 +30,7 @@ public class EnrichedInventoryDto {
 
 
     public EnrichedInventoryDto(String productId, Integer oldQuantity, Integer newQuantity,
-                                Integer quantityChange, Long eventTime, String changeReason) {
+                                Integer quantityChange, Instant eventTime, String changeReason) {
         this.productId = productId;
         this.oldQuantity = oldQuantity;
         this.newQuantity = newQuantity;
@@ -73,11 +73,11 @@ public class EnrichedInventoryDto {
         this.quantityChange = quantityChange;
     }
 
-    public Long getEventTime() {
+    public Instant getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(Long eventTime) {
+    public void setEventTime(Instant eventTime) {
         this.eventTime = eventTime;
     }
 

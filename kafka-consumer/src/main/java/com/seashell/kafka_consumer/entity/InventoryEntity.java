@@ -47,10 +47,10 @@ public class InventoryEntity { // 代表資料表中「一筆」資料
     protected void onUpdate() {
         updatedAt = Instant.now(); // 少了分號
     }
-    public InventoryEntity(String productId, Integer quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    protected InventoryEntity() {} //for jpa
 
+    public InventoryEntity(String productId) { // for catalog
+        this.productId = productId;
     }
 
     public Long getId() {
@@ -75,6 +75,10 @@ public class InventoryEntity { // 代表資料表中「一筆」資料
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public long getVersion() {
+        return version;
     }
 
 }

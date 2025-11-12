@@ -1,7 +1,13 @@
 package com.seashell.kafka_consumer.entity;
 
-import jakarta.persistence.*;
 import java.time.Instant;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "inventory_log")
@@ -32,8 +38,6 @@ public class InventoryLogEntity {
     @Column
     private String changeReason; // 庫存變動原因 可選擇性填入
 
-    @Version
-    private long version; // 防止race condition的輔助性欄位 Hibernate 自動管理，單調增加。 不須 getter settter
 
     // ===== Constructor =====
     public InventoryLogEntity() {
@@ -111,4 +115,5 @@ public class InventoryLogEntity {
     public void setChangeReason(String changeReason) {
         this.changeReason = changeReason;
     }
+
 }

@@ -28,7 +28,7 @@ public class UpdateInventoryLogEnricher {
         Instant timestamp = this.formatTimeToInstant(dto);
         // 查舊值，鎖住 row
         InventoryEntity entity = inventoryRepository
-                .findByProductIdWithLock(dto.getProductId())
+                .findByProductIdForUpdate(dto.getProductId())
                 .orElseThrow(() -> new InventoryNotFoundException(
                 "No inventory record found for productId: " + dto.getProductId()
         ));

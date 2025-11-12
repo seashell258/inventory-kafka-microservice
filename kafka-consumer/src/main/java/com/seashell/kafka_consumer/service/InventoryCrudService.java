@@ -31,7 +31,7 @@ public class InventoryCrudService {
 
     // 健壯性檢查：找不到就拋 exception
     public InventoryEntity getInventoryOrThrowWithLock(String productId) {
-        return inventoryRepository.findByProductIdWithLock(productId)
+        return inventoryRepository.findByProductIdForUpdate(productId)
                 .orElseThrow(() -> new InventoryNotFoundException(
                         "Inventory not found for productId: " + productId));
     }
@@ -59,7 +59,7 @@ public class InventoryCrudService {
 
     // 刪除庫存項
     public void deleteInventory(String productId) {
-        inventoryRepository.findByProductIdWithLock(productId)
+        inventoryRepository.findByProductIdForUpdate(productId)
                 .ifPresent(inventoryRepository::delete);
     }
 
