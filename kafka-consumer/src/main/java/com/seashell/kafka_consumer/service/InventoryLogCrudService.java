@@ -1,16 +1,18 @@
 package com.seashell.kafka_consumer.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.seashell.kafka_consumer.dto.EnrichedInventoryDto;
+
 import com.seashell.kafka_consumer.entity.InventoryLogEntity;
 import com.seashell.kafka_consumer.exception.InventoryNotFoundException;
 import com.seashell.kafka_consumer.repository.InventoryLogRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class InventoryLogCrudService {

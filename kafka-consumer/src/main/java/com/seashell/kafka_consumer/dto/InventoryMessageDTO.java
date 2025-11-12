@@ -19,6 +19,8 @@ public class InventoryMessageDto {
     private String changeReason;  //庫存變更原因選填
 
     private String eventTime;  
+
+    
     // ===== Getter / Setter =====
     public String getProductId() {
         return productId;

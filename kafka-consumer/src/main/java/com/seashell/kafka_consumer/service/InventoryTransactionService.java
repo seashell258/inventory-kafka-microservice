@@ -48,6 +48,7 @@ public class InventoryTransactionService {
                 successList.add(enriched);
             } catch (Exception e) {
                 errorMap.put(dto, e.getMessage());
+                System.out.println("cattttttttttttttttttt"+e.getMessage());
             }
         }
 
