@@ -14,8 +14,9 @@ public class InventoryUpdateService {
 
     private final KafkaTemplate<String, InventoryUpdateDto> kafkaTemplate;
 
-    public InventoryUpdateService(KafkaTemplate<String, InventoryUpdateDto> kafkaTemplate) {
+    public InventoryUpdateService(KafkaTemplate<String, InventoryUpdateDto> kafkaTemplate  ) {
         this.kafkaTemplate = kafkaTemplate;
+
     }
 
     public void fillEventTime(InventoryUpdateDto dto) {
@@ -25,6 +26,7 @@ public class InventoryUpdateService {
     public OperationResult publishInventoryUpdate(InventoryUpdateDto dto) {
         this.fillEventTime(dto);
         try {
+
             kafkaTemplate.send("inventory", dto.getProductId(), dto);
             return OperationResult.success("successfully published to kafka");
         } catch (Exception e) {

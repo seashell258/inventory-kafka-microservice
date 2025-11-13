@@ -23,7 +23,7 @@ public class InventoryCrudService {
 
     // 更新庫存
     public InventoryEntity updateInventoryOrThrow(EnrichedInventoryDto dto) {
-        InventoryEntity entity = this.getInventoryOrThrowWithLock(dto.getProductId()); // 健壯性檢查
+        InventoryEntity entity = this.getInventoryOrThrow(dto.getProductId()); // 健壯性檢查
         entity.setQuantity(dto.getNewQuantity());
         return inventoryRepository.save(entity);
 

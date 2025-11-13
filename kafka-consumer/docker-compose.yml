@@ -12,7 +12,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
 
       KAFKA_LISTENERS: "INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093"
-      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka_broker1:9092,EXTERNAL://127.0.0.1:9094"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://127.0.0.1:9092,EXTERNAL://127.0.0.1:9094"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
@@ -24,7 +24,8 @@ services:
       - kafka_kraft:/var/lib/kafka/data
 
     ports:
-      - "9092:9092" # 使我本地寫程式碼傳訊息給 localhost 9092 能被轉發到上面 kafka容器的 local host 9092
+# 使我本地寫程式碼傳訊息給 localhost 9094 能被轉發到上面 kafka容器的 local host 9094
+      - "9092:9092"
       - "9093:9093"
       - "9094:9094"
 
@@ -43,7 +44,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka_broker1:9092
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: host.docker.internal:9092
     ports:
       - "8080:8080"
   

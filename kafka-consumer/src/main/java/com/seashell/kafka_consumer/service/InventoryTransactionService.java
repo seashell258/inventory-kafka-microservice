@@ -48,7 +48,8 @@ public class InventoryTransactionService {
                 successList.add(enriched);
             } catch (Exception e) {
                 errorMap.put(dto, e.getMessage());
-                System.out.println("cattttttttttttttttttt"+e.getMessage());
+                throw e; //throw again。不然 e 被這裡的 catch 吞掉。 
+                // throw again，這樣 consumer 呼叫這方法的時候，才能用 error handler 依據 exception 去決定不同處理方法。
             }
         }
 
