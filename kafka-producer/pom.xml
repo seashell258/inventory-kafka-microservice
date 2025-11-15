@@ -64,6 +64,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>
+                        -javaagent:./opentelemetry-javaagent.jar
+                        -Dotel.service.name=gateway
+                        -Dotel.exporter.otlp.endpoint=http://localhost:4317
+						-Dotel.exporter.otlp.protocol=grpc
+                    </jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

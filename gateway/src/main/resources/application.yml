@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false # 自動將 Eureka 中的服務加為路由
+      routes:
+        - id: producer
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/inventory/**
+          filters:
+            #- name: RequestRateLimiter
+             # args:
+              #  redis-rate-limiter.replenishRate: 10
+               # redis-rate-limiter.burstCapacity: 20
+            #- name: CircuitBreaker
+             # args:
+              #  name: myCB
+               # fallbackUri: forward:/fallback
